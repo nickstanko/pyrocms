@@ -209,6 +209,7 @@ return [
          * Streams Service Provider
          */
         Anomaly\Streams\Platform\StreamsServiceProvider::class,
+        Laravel\Passport\PassportServiceProvider::class,
     ],
 
     /*

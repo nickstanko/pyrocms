@@ -42,7 +42,7 @@ return [
         ],
 
         'api' => [
-            'driver'   => 'token',
+            'driver'   => 'passport',
             'provider' => 'users',
         ],
     ],
@@ -67,7 +67,7 @@ return [
     'providers' => [
         'users' => [
             'driver' => 'eloquent',
-            'model'  => Anomaly\UsersModule\User\UserModel::class,
+            'model'  => App\UserModel::class,
         ],
 
         // 'users' => [
