@@ -1,0 +1,67 @@
+services:
+  app:
+    image: ghcr.io/nickstanko/pyrocms:${PYROCMS_IMAGE_TAG:-latest}
+    pull_policy: always
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_started
+    environment:
+      APP_ENV: production
+      APP_DEBUG: "false"
+      APP_URL: ${APP_URL:-http://localhost:8080}
+      DB_CONNECTION: mysql
+      DB_HOST: db
+      DB_PORT: 3306
+      DB_DATABASE: ${DB_DATABASE:-pyrocms}
+      DB_USERNAME: ${DB_USERNAME:-pyrocms}
+      DB_PASSWORD: ${DB_PASSWORD:-secret}
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      CACHE_DRIVER: ${CACHE_DRIVER:-redis}
+      SESSION_DRIVER: ${SESSION_DRIVER:-redis}
+    ports:
+      - "${APP_PORT:-8080}:80"
+    volumes:
+      - app_addons:/var/www/html/addons
+      - app_storage:/var/www/html/storage
+      - app_bootstrap_cache:/var/www/html/bootstrap/cache
+      # Optional bind mounts for shared addons, app data, and config overlays:
+      # - ./docker/volumes/addons:/var/www/html/addons
+      # - ./docker/volumes/storage:/var/www/html/storage
+      # - ./docker/volumes/bootstrap-cache:/var/www/html/bootstrap/cache
+      # - ./docker/volumes/public-app:/var/www/html/public/app
+      # - ./docker/volumes/config:/var/www/html/config
+      # - ./docker/volumes/streams-config:/var/www/html/resources/streams/config
+
+  db:
+    image: mysql:8.4
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: ${DB_DATABASE:-pyrocms}
+      MYSQL_USER: ${DB_USERNAME:-pyrocms}
+      MYSQL_PASSWORD: ${DB_PASSWORD:-secret}
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD:-root}
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "-p${DB_ROOT_PASSWORD:-root}"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 20s
+    volumes:
+      - mysql_data:/var/lib/mysql
+
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+    volumes:
+      - redis_data:/data
+
+volumes:
+  app_addons:
+  app_storage:
+  app_bootstrap_cache:
+  mysql_data:
+  redis_data:

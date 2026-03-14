@@ -1,0 +1,16 @@
+.git
+.github
+node_modules
+vendor
+storage/logs/*
+storage/framework/cache/*
+storage/framework/sessions/*
+storage/framework/views/*
+storage/debugbar/*
+storage/httpcache/*
+storage/streams/*
+storage/views/twig/*
+.DS_Store
+.env
+.env.*
+docker-compose*.yml

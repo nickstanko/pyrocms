@@ -205,6 +205,29 @@ curl -X POST http://localhost/api/logout \
 - The user provider now points at `App\UserModel`, which extends the Pyro users model and adds `HasApiTokens`.
 - The login endpoint uses the configured Pyro user login mode to resolve whether Passport should authenticate by username or email.
 
+## Docker Volumes
+
+The Docker setup supports persistent or shared mounts for the parts of the app that usually need to live outside the image:
+
+- `addons/` for shared or custom PyroCMS addons
+- `storage/` for runtime app data
+- `bootstrap/cache/` for generated cache files
+- `public/app/` for user-managed public assets
+- `config/` and `resources/streams/config/` if you want host-managed config overlays
+
+The default production compose file already persists:
+
+- `/var/www/html/addons`
+- `/var/www/html/storage`
+- `/var/www/html/bootstrap/cache`
+
+If you want host bind mounts instead of Docker-managed named volumes, uncomment the example mount lines in [docker-compose.yml](/Users/nicks/Projects/pyrocms/docker-compose.yml) and point each source path at the host directory you want to share.
+
+Important:
+
+- Mounting `config/` or `resources/streams/config/` replaces the image copy for those directories, so only do that when your host copy is complete.
+- The development compose file already bind mounts the whole repository, so local addons, config, and app data can all be edited directly there.
+
 ## Security
 
 If you discover any security related issues, please email admin@formable.app instead of using the issue tracker.
