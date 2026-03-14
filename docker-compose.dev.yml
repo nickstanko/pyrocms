@@ -28,9 +28,9 @@ services:
       - .:/var/www/html
 
   node:
-    image: node:20-bookworm-slim
+    image: node:16-bullseye-slim
     working_dir: /var/www/html
-    command: sh -lc "npm install && npm run watch-poll"
+    command: sh -lc "npm install --no-audit --no-fund && npm run watch-poll"
     volumes:
       - .:/var/www/html
 

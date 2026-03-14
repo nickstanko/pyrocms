@@ -1,9 +1,9 @@
 # syntax=docker/dockerfile:1.7
 
-FROM node:20-bookworm-slim AS frontend_assets
+FROM node:16-bullseye-slim AS frontend_assets
 WORKDIR /app
-COPY package.json ./
-RUN npm install
+COPY package*.json ./
+RUN npm install --no-audit --no-fund
 COPY resources ./resources
 COPY webpack.mix.js ./
 RUN npm run production
