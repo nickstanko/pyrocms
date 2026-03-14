@@ -4,9 +4,13 @@ FROM node:16-bullseye-slim AS frontend_assets
 WORKDIR /app
 COPY package*.json ./
 RUN npm install --no-audit --no-fund
+COPY public ./public
 COPY resources ./resources
 COPY webpack.mix.js ./
-RUN npm run production
+RUN npm run production \
+    && mkdir -p public \
+    && if [ ! -f public/mix-manifest.json ] && [ -f mix-manifest.json ]; then cp mix-manifest.json public/mix-manifest.json; fi \
+    && test -f public/mix-manifest.json
 
 FROM php:8.4-apache-bookworm AS base
 
